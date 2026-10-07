@@ -1,0 +1,71 @@
+class PoSet:
+    """
+    Create a partial ordered set (poset) with set S and realtion R.
+
+    Extended Summary: S should be an interable and is silently converted to
+    a set. Relations will be a set of tuples (x, y). 
+
+    Parameters
+    ----------
+    S : set, list, or iterable.
+        The elements in a set.
+    R : set, list, or tuple or pairs
+        A binary relation that satisfies 
+        reflexivity, antisymmetry, and transitivity.
+        
+    Notes
+    -----
+    The relation R is a subset of SxS such that R satisfies the following:
+
+        1. Reflexivity: For all x in S: (x,x) is in R
+
+        2. Antisymmetry: For all x and y in S, if (x, y) and (y, x) are in R,
+                then x = y. i.e. R never contains both a pair and its mirror 
+                image,unless the two are the same pair.
+
+        3. Transitivity: For all x, y, z in S, if (x,y) and (y,z) are in R,
+                then (x,z) is also in R.
+    
+    Examples
+    --------
+    """
+    def __init__(self, S, R):
+
+        self.S = set(S)
+        self.R = R      
+            
+        # Value Checks
+        
+        # Relation Checks
+        violate_reflexive = self._reflexive_violations()
+        if violate_reflexive:
+            raise ValueError(f"R is not reflexive. Missing {violate_reflexive}")
+
+        violate_antisymmetry = self._antisymmetric_violations()
+        if violate_antisymmetry:
+            raise ValueError(
+                "R is not antisymmetric. "
+                f"Violating pairs {violate_antisymmetry}"
+            )
+
+        violate_transitive = self._transitivity_violations()
+        if violate_transitive:
+            raise ValueError(
+                "R is not transitive. "
+                f"Violating pairs {violate_transitive}"
+            )
+
+
+    def _reflexive_violations(self): 
+        return [(e,e) for e in self.S if (e,e) not in self.R]
+         
+
+    def _antisymmetric_violations(self):
+        return [(x,y) for (x,y) in self.R if x != y and (y,x) in self.R ]
+        
+    def _transitivity_violations(self):
+        return [(a,d)
+            for (a,b) in self.R for (c,d) in self.R
+            if b == c and (a,d) not in self.R
+        ]
+
