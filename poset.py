@@ -1,9 +1,10 @@
+from multiprocessing import Value
 class PoSet:
     """
     Create a partial ordered set (poset) with set S and realtion R.
 
     Extended Summary: S should be an interable and is silently converted to
-    a set. Relations will be a set of tuples (x, y). 
+    a set. Relations will also be silently converted a set of 2-tuples (x, y). 
 
     Parameters
     ----------
@@ -32,23 +33,30 @@ class PoSet:
     def __init__(self, S, R):
 
         self.S = set(S)
-        self.R = R      
+        self.R = {tuple(p) for p in R}     
             
         # Value Checks
+        incorrect_length = self._length_violation()
+        if incorrect_length:
+            raise ValueError(f"{incorrect_length} is not a pair.")
+        
+        missing_member = self._membership_violation()
+        if missing_member:
+            raise ValueError(f"{missing_member} is in R but not in S.")
         
         # Relation Checks
-        violate_reflexive = self._reflexive_violations()
+        violate_reflexive = self._reflexive_violation()
         if violate_reflexive:
             raise ValueError(f"R is not reflexive. Missing {violate_reflexive}")
 
-        violate_antisymmetry = self._antisymmetric_violations()
+        violate_antisymmetry = self._antisymmetric_violation()
         if violate_antisymmetry:
             raise ValueError(
                 "R is not antisymmetric. "
                 f"Violating pairs {violate_antisymmetry}"
             )
 
-        violate_transitive = self._transitivity_violations()
+        violate_transitive = self._transitivity_violation()
         if violate_transitive:
             raise ValueError(
                 "R is not transitive. "
@@ -56,14 +64,19 @@ class PoSet:
             )
 
 
-    def _reflexive_violations(self): 
+    def _membership_violation(self):
+        return [t for t in self.R if any(x not in self.S for x in t)]
+
+    def _length_violation(self):
+        return [t for t in self.R if len(t) != 2]
+
+    def _reflexive_violation(self): 
         return [(e,e) for e in self.S if (e,e) not in self.R]
          
-
-    def _antisymmetric_violations(self):
+    def _antisymmetric_violation(self):
         return [(x,y) for (x,y) in self.R if x != y and (y,x) in self.R ]
         
-    def _transitivity_violations(self):
+    def _transitivity_violation(self):
         return [(a,d)
             for (a,b) in self.R for (c,d) in self.R
             if b == c and (a,d) not in self.R
