@@ -19,3 +19,21 @@
 # Question for Justin
 - Are all simplicial complexes the power set?
 -
+
+
+# Simplicial Complex (K) Subclass
+## Methods
+- `dim_k()`
+    - =max dim $\sigma$ for $\sigma \in K$
+    - $dim~\sigma = \lvert \sigma \rvert - 1$
+    - Euler Characterisc?
+- `boundary_k()`
+  - $\set{\sigma \in \text{K, s.t. } \exists \tau \subset \sigma}$
+- `is_surface()`
+- `is_orientable()`
+- `is_connected()`
+  - closure of K
+  - interior of K
+  - closed serface is a 2D simplicial complex with $\emptyset$ boundary
+- `barycentric_)subdivision()`
+  - $K \mapsto BSD(K)$
