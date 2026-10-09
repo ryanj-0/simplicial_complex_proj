@@ -1,4 +1,3 @@
-from multiprocessing import Value
 class PoSet:
     """
     Create a partial ordered set (poset) with set S and realtion R.
@@ -47,7 +46,10 @@ class PoSet:
         # Relation Checks
         violate_reflexive = self._reflexive_violation()
         if violate_reflexive:
-            raise ValueError(f"R is not reflexive. Missing {violate_reflexive}")
+            raise ValueError(
+                "R is not reflexive."
+                f"Missing {violate_reflexive}"
+            )
 
         violate_antisymmetry = self._antisymmetric_violation()
         if violate_antisymmetry:
@@ -62,7 +64,6 @@ class PoSet:
                 "R is not transitive. "
                 f"Violating pairs {violate_transitive}"
             )
-
 
     def _membership_violation(self):
         return [t for t in self.R if any(x not in self.S for x in t)]
