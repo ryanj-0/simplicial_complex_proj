@@ -7,7 +7,7 @@ class PoSet:
 
     Parameters
     ----------
-    S : set, list, or iterable.
+    S : iterables
         The elements in a set.
     R : set, list, or tuple or pairs
         A binary relation that satisfies 
