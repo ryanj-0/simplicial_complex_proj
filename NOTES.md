@@ -23,7 +23,7 @@
 
 # Simplicial Complex (K) Subclass
 ## Methods
-- `dim_k()`
+- `dim_k()` (p.52)
     - =max dim $\sigma$ for $\sigma \in K$
     - $dim~\sigma = \lvert \sigma \rvert - 1$
     - Euler Characterisc?
