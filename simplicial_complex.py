@@ -1,5 +1,7 @@
 from itertools import combinations
 
+import networkx as nx
+
 from poset import PoSet
 
 
@@ -37,7 +39,6 @@ class SimplicialComplex(PoSet):
 
         super().__init__(S=simplex_faces, R=relation)
 
-
     def __str__(self):
         ordered_output = sorted(
             self.S,
@@ -49,3 +50,27 @@ class SimplicialComplex(PoSet):
     # format pretty output
     def _format_face(self, face):
         return f"{{{', '.join(sorted(face))}}}"
+
+    def n_simplix(self, n):
+        
+        return
+
+    def dim_k(self):
+        return
+    
+    def boundary_k(self):
+        return
+
+    def is_surface(self):
+        return
+
+    def is_orientable(self):
+        return
+
+    def is_connected(self):
+        return
+
+    def barycentric_subdivision(self):
+        return
+
+
