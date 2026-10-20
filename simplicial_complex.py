@@ -14,6 +14,11 @@ class SimplicialComplex(PoSet):
     S : iterable
         Set of the faces of a simplicial complex
 
+
+    Methods
+    -------
+    
+
     Notes
     -----
     - S can be at minimum the set of maximal simplices. All subsets will be
@@ -50,13 +55,18 @@ class SimplicialComplex(PoSet):
     # format pretty output
     def _format_face(self, face):
         return f"{{{', '.join(sorted(face))}}}"
+    
+    def n_simplices(self, n):
+        simplex_lengths = [len(f)-1 for f in self.S]
+        if(n > max(simplex_lengths)):
+            raise ValueError(
+                f"{n}-simplex does not exisit"
+            )
+        return {f for f in self.S if len(f)-1 == n}
 
-    def n_simplix(self, n):
-        
-        return
-
-    def dim_k(self):
-        return
+    # max dim of any simplices
+    def dim(self):
+        return max(len(f)-1 for f in self.S)
     
     def boundary_k(self):
         return
