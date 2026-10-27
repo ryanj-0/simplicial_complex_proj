@@ -79,7 +79,7 @@ class SimplicialComplex(PoSet):
         G = self.hasse_diagram()
         pos = nx.multipartite_layout(G, subset_key="level", align="horizontal")
         my_labels = {x: self._nice_label(x) for x in self.S}
-        nx.draw(H, pos, labels=my_labels, with_labels=True)
+        nx.draw(G, pos, labels=my_labels, with_labels=True)
 
     def dim(self):
         return max(len(f)-1 for f in self.S)
@@ -91,13 +91,17 @@ class SimplicialComplex(PoSet):
         return [self._format_face(f) for f in boundary]
         
     def is_surface(self):
+        # 2 or less
+        # every included in 2-simplex
         return
 
     def is_orientable(self):
         return
 
     def is_connected(self):
-        return
+        G = self.hasse_diagram()
+        G = G.to_undirected()
+        return nx.is_connected(G)
 
     def barycentric_subdivision(self):
         return
