@@ -52,12 +52,14 @@ class SimplicialComplex(PoSet):
         format_output = [self._format_face(f) for f in ordered_output]
         return f"S = {{{', '.join(format_output)}}}"
 
-    # format pretty output
     def _format_face(self, face):
-        return f"{{{', '.join(map(str, sorted(face)))}}}"
+        return f"{{{', '.join(map(str, self._orient_element(face)))}}}"
     
-    def _nice_label(self, node):
-        return "".join(str(x) for x in sorted(node))
+    def _node_label(self, node):
+        return "".join(str(x) for x in self._orient_element(node))
+
+    def _orient_element(self, element):
+        return tuple(sorted(element))
     
     def facets(self):
         G = self.hasse_diagram()
@@ -66,9 +68,7 @@ class SimplicialComplex(PoSet):
     def n_simplices(self, n):
         simplex_lengths = [len(f)-1 for f in self.S]
         if(n > max(simplex_lengths)):
-            raise ValueError(
-                f"{n}-simplex does not exisit"
-            )
+            raise ValueError(f"{n}-simplex does not exisit")
         return {f for f in self.S if len(f)-1 == n}
 
     def complex_graph(self):
@@ -78,7 +78,8 @@ class SimplicialComplex(PoSet):
         return nx.draw(G, with_labels=True)
     
     def hasse_diagram(self):
-        G = nx.DiGraph(self.R)
+        order_relations = sorted(self.R, key=lambda x: (len(x[0]), len(x[1])))
+        G = nx.DiGraph(order_relations)
         G.remove_edges_from(list(nx.selfloop_edges(G)))
         G = nx.transitive_reduction(G)
         for n in G.nodes:
@@ -88,11 +89,16 @@ class SimplicialComplex(PoSet):
     def draw_hasse(self):
         G = self.hasse_diagram()
         pos = nx.multipartite_layout(G, subset_key="level", align="horizontal")
-        my_labels = {x: self._nice_label(x) for x in self.S}
+        my_labels = {x: self._node_label(x) for x in self.S}
         nx.draw(G, pos, labels=my_labels, with_labels=True)
 
     def dim(self):
         return max(len(f)-1 for f in self.S)
+
+    def is_connected(self):
+        G = self.hasse_diagram()
+        G = G.to_undirected()
+        return nx.is_connected(G)
     
     def boundary_k(self):
         G = self.hasse_diagram()
@@ -101,7 +107,7 @@ class SimplicialComplex(PoSet):
             for n in self.facets() 
             for p in G.predecessors(n) 
             if G.out_degree(p) == 1           
-            ]
+        ]
         return [self._format_face(f) for f in boundary]
         
     def is_surface(self):
@@ -116,13 +122,3 @@ class SimplicialComplex(PoSet):
 
     def is_orientable(self):
         return
-
-    def is_connected(self):
-        G = self.hasse_diagram()
-        G = G.to_undirected()
-        return nx.is_connected(G)
-
-    def barycentric_subdivision(self):
-        return
-
-
