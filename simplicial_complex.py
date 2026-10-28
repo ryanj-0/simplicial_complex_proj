@@ -54,10 +54,14 @@ class SimplicialComplex(PoSet):
 
     # format pretty output
     def _format_face(self, face):
-        return f"{{{', '.join(sorted(face))}}}"
+        return f"{{{', '.join(map(str, sorted(face)))}}}"
     
     def _nice_label(self, node):
         return "".join(str(x) for x in sorted(node))
+    
+    def facets(self):
+        G = self.hasse_diagram()
+        return [n for n in G if G.out_degree(n) == 0]
 
     def n_simplices(self, n):
         simplex_lengths = [len(f)-1 for f in self.S]
@@ -67,6 +71,12 @@ class SimplicialComplex(PoSet):
             )
         return {f for f in self.S if len(f)-1 == n}
 
+    def complex_graph(self):
+        get_edges = self.n_simplices(1)
+        G = nx.Graph()
+        G.add_edges_from(get_edges)
+        return nx.draw(G, with_labels=True)
+    
     def hasse_diagram(self):
         G = nx.DiGraph(self.R)
         G.remove_edges_from(list(nx.selfloop_edges(G)))
@@ -84,16 +94,25 @@ class SimplicialComplex(PoSet):
     def dim(self):
         return max(len(f)-1 for f in self.S)
     
-    def boundary_k(self, element):
+    def boundary_k(self):
         G = self.hasse_diagram()
-        element = frozenset(element)
-        boundary = sorted(G.predecessors(element), key=sorted)
+        boundary = [
+            p 
+            for n in self.facets() 
+            for p in G.predecessors(n) 
+            if G.out_degree(p) == 1           
+            ]
         return [self._format_face(f) for f in boundary]
         
     def is_surface(self):
-        # 2 or less
-        # every included in 2-simplex
-        return
+        # Every vertex in a 2-simplex and every maximal is a 2-simplex
+        all(len(n) == 3 for n in self.facets())
+
+        # Edge contained in exactly two simplices
+        G = self.hasse_diagram()
+        contained_in_two = [
+            len(list(G.successors(n))) for n in self.n_simplices(1)]
+        return all(n == 2 for n in contained_in_two)
 
     def is_orientable(self):
         return
