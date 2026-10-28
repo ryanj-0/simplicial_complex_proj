@@ -1,4 +1,4 @@
-from itertools import combinations
+from itertools import combinations, permutations
 
 import networkx as nx
 
