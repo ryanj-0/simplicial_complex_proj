@@ -10,7 +10,7 @@ class PoSet:
     S : iterables
         The elements in a set.
     R : set, list, or tuple or pairs
-        A binary relation that satisfies 
+        A binary relation that satisfies the properties
         reflexivity, antisymmetry, and transitivity.
         
     Notes
