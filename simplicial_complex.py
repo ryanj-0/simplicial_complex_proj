@@ -77,6 +77,21 @@ class SimplicialComplex(PoSet):
         G.add_edges_from(self.n_simplices(1))
         return nx.draw(G, with_labels=True)
 
+    def hasse_diagram(self):
+        order_relations = sorted(self.R, key=lambda x: (len(x[0]), len(x[1])))
+        G = nx.DiGraph(order_relations)
+        G.remove_edges_from(list(nx.selfloop_edges(G)))
+        G = nx.transitive_reduction(G)
+        for n in G.nodes:
+            G.nodes[n]["level"] = len(n)
+        return G
+
+    def draw_hasse(self):
+        G = self.hasse_diagram()
+        pos = nx.multipartite_layout(G, subset_key="level", align="horizontal")
+        my_labels = {x: self._node_label(x) for x in self.S}
+        nx.draw(G, pos, labels=my_labels, with_labels=True)
+
     def dim_k(self):
         return max(len(f)-1 for f in self.S)
 
@@ -100,26 +115,9 @@ class SimplicialComplex(PoSet):
             if G.out_degree(p) == 1           
         ]
         return [self._format_face(f) for f in boundary]
-    
-    def hasse_diagram(self):
-        order_relations = sorted(self.R, key=lambda x: (len(x[0]), len(x[1])))
-        G = nx.DiGraph(order_relations)
-        G.remove_edges_from(list(nx.selfloop_edges(G)))
-        G = nx.transitive_reduction(G)
-        for n in G.nodes:
-            G.nodes[n]["level"] = len(n)
-        return G
-
-    def draw_hasse(self):
-        G = self.hasse_diagram()
-        pos = nx.multipartite_layout(G, subset_key="level", align="horizontal")
-        my_labels = {x: self._node_label(x) for x in self.S}
-        nx.draw(G, pos, labels=my_labels, with_labels=True)
-
-    
         
     def is_surface(self):
-        # Every vertex in a 2-simplex and every maximal is a 2-simplex
+        # Every vertex is in a 2-simplex and every maximal is a 2-simplex        
         if not all(len(n) == 3 for n in self.maximal()):
             return False
 
