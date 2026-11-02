@@ -53,12 +53,12 @@ class SimplicialComplex(PoSet):
         return f"S = {{{', '.join(format_output)}}}"
 
     def _format_face(self, face):
-        return f"{{{', '.join(map(str, self._orient_element(face)))}}}"
+        return f"{{{', '.join(map(str, self._sortt_element(face)))}}}"
     
     def _node_label(self, node):
-        return "".join(str(x) for x in self._orient_element(node))
+        return "".join(str(x) for x in self._sort_element(node))
 
-    def _orient_element(self, element):
+    def _sort_element(self, element):
         return tuple(sorted(element))
     
     def maximal(self):
@@ -141,7 +141,7 @@ class SimplicialComplex(PoSet):
                 check_neighbors = list(
                     G.successors(frozenset(edge)))
                 neighbors = [n for n in check_neighbors if n != current]
-
+                # Find neighbors and check/set orientation
                 for n in neighbors:
                     neighbor_rotations = self._get_rotations(n)
                     neighbor_order = next(iter(neighbor_rotations))
@@ -150,7 +150,7 @@ class SimplicialComplex(PoSet):
                             k for k, v in neighbor_rotations.items()
                             if v != neighbor_rotations[neighbor_order]
                         )
-
+                    # Check if neighbor in our orientation dictionary already
                     if n not in orientation_dict:
                         orientation_dict[n] = neighbor_order
                         to_check.append(n)
