@@ -1,6 +1,5 @@
 from itertools import permutations
 
-from poset import PoSet
 from simplicial_complex import SimplicialComplex
 
 mobius = SimplicialComplex([
