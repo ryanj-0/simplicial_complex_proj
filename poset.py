@@ -50,7 +50,7 @@ class PoSet:
         violate_reflexive = self._reflexive_violation()
         if violate_reflexive:
             raise ValueError(
-                "R is not reflexive."
+                "R is not reflexive. "
                 f"Missing {violate_reflexive}"
             )
 
@@ -67,6 +67,10 @@ class PoSet:
                 "R is not transitive. "
                 f"Violating pairs {violate_transitive}"
             )
+
+    def format_relation(self):
+        formatted_relation = [f"({x},{y})" for x, y in sorted(self.R)]
+        return formatted_relation
 
     def _membership_violation(self):
         return [t for t in self.R if any(x not in self.S for x in t)]
