@@ -53,7 +53,7 @@ class SimplicialComplex(PoSet):
         return f"S = {{{', '.join(format_output)}}}"
 
     def _format_face(self, face):
-        return f"{{{', '.join(map(str, self._sortt_element(face)))}}}"
+        return f"{{{', '.join(map(str, self._sort_element(face)))}}}"
     
     def _node_label(self, node):
         return "".join(str(x) for x in self._sort_element(node))
